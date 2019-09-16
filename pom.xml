@@ -5,15 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.accenture.microservice</groupId>
-    <artifactId>microservice-digital-focus-group/artifactId>
+    <artifactId>microservice-digital-focus-group</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
-    <modules>
-        <module>employee-microservice</module>
-        <module>aggregator-service</module>
-        <module>department-microservice</module>
-    </modules>
-
 
 </project>
