@@ -3,8 +3,8 @@
 
 echo "Setting up git global..."
 sleep 1
-git config --global user.name "Purba, Richard"
-git config --global user.email "richard.purba@accenture.com"
+git config --global user.name "Lastname, Firstname"
+git config --global user.email "something@something.com"
 git config --global http.proxy ''
 
 git config --global -l
