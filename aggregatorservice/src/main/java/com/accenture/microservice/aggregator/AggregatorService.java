@@ -8,24 +8,24 @@ import javax.annotation.Resource;
 import java.io.IOException;
 
 @RestController
-public class Aggregator {
+public class AggregatorService {
 
     @Autowired
-    private Department department;
+    private DepartmentService departmentService;
 
     @Resource
-    private Employee employee;
+    private EmployeeService employeeService;
 
     @Resource
-    private Euro euro;
+    private EuroService euroService;
 
     @GetMapping("/salary")
     public Salary aggregating(){
         Salary salary = new Salary();
         try{
-            salary.setDepartment(department.getDepartmentInfo());
-            salary.setEmployee(employee .getEmployee());
-            salary.setEmployee(euro.getEuro());
+            salary.setDepartment(departmentService.getDepartmentInfo());
+            salary.setEmployee(employeeService.getEmployee());
+            salary.setEuro(euroService.getEuro());
         }catch (IOException e){
             e.printStackTrace();
         }

@@ -1,6 +1,5 @@
 package com.accenture.microservice.aggregator;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class DepartmentImpl implements Department {
+public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public String getDepartmentInfo() throws IOException{

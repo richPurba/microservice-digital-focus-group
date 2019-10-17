@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class EuroImpl implements Euro {
+public class EuroServiceImpl implements EuroService {
 
     @Override
     public String getEuro() {

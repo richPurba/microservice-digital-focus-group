@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class EmployeeImpl implements Employee {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String getEmployee() {

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 
-public interface Department {
+public interface DepartmentService {
 
     public String getDepartmentInfo() throws IOException;
 }

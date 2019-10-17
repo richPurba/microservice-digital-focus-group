@@ -1,5 +1,5 @@
 package com.accenture.microservice.aggregator;
 
-public interface Euro {
+public interface EuroService {
     public String getEuro();
 }
