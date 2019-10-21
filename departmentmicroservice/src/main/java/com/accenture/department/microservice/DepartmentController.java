@@ -11,7 +11,7 @@ public class DepartmentController {
     @HystrixCommand(fallbackMethod = "someFallBackMethod", commandKey = "DepartmentCommandKey", groupKey = "DepartmentGroup")
     @GetMapping("/department")
     public String getDepartmentInfo(){
-        Boolean checkRandom = true ; //RandomUtils.nextBoolean();
+        Boolean checkRandom = RandomUtils.nextBoolean();
         if(checkRandom){
             return "Accenture Digital";
         } else
