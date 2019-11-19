@@ -1,15 +1,53 @@
-# Microservice training
+# Spring Cloud Event Sourcing Example
 
-## Git and CI/CD
-Please use ```git clone https://github.com/richPurba/microservice-digital-focus-group.git``` to your local laptop. 
-There are 3 different branches: Master, Release, and Feature. Please use the Feature branch as the Master branch is protected and there is a limited access to Release (regarding roles of these different branches, we can revisit this topic if you need the master). Afterwards, do the Pull Request in this github.
+This reference application is a Spring Cloud example of using event sourcing in microservices. The project is intended to demonstrate end-to-end best practices for building a _Netflix-like_ microservice architecture using Spring Cloud.
 
-With convention, please use the following commit pattern ```git checkout -b feature_{MajorVersion}.{MinorVersion}/{YourFeatureName}```, thus please fill in the value in ```{}```
+Tutorial provided here: http://www.kennybastani.com/2016/04/event-sourcing-microservices-spring-cloud.html
 
-## How to use this project?
-To run the project simply ```mvn spring-boot:run``` at each of the microservice folder. Basically you should run this command where there is a ```pom.xml``` file, where this ```pom.xml``` is the Project Object Model file (thus POM), or similar like ```package.json``` for ```npm``` installation.
-For more detail, please go this [Springboot doc](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-running-your-application.html#using-boot-running-with-the-maven-plugin)
+* Spring Cloud OAuth2
+  * Authorization Server
+  * Resource Server
+* Edge Service
+  * API gateway with OAuth2 protected resources
+  * OAuth2 SSO
+* Event-driven Messaging
+  * Event sourcing
 
-For other project, such as NodeJs, please consult your own build system (such as ```npm start ``` for any build tool with npm.
+## Architecture Diagram
 
+![Online Store Architecture Diagram](http://i.imgur.com/zqzmAzi.png)
 
+## Online Store Domain
+
+This reference application is based on common design patterns for building an ecommerce application. The application includes the following microservices.
+
+* Discovery Service
+* Edge Service
+* User Service
+* Catalog Service
+* Account Service
+* Order Service
+* Inventory Service
+* Online Store Web
+* Shopping Cart Service
+
+## Usage
+
+Microservice architectures commonly use multiple databases. The resources of the business domain are distributed across the microservice architecture, with each service having its own exclusive database. Each type of database for a microservice is commonly chosen by a development team based on its advantages when solving a specific problem.
+
+This reference application uses the following mixture of databases.
+
+* MySQL - RDBMS
+* Neo4j - GraphDB
+* MongoDB - Document Store
+* Redis - Key/value Store
+
+### Integration Testing
+
+If you would like to use Docker for integration testing, a `docker-compose.yml` file has been provided in the root directory. To build all the images, first make sure that you have Docker installed and available in your command line tool. With Docker and Docker Compose installed, execute the provided `run.sh` script. This script will build each container and start each of the services and database dependencies. When all the services have started up. Verify that the services are registered with Eureka at `http://$DOCKER_IP:8761`.
+
+If everything has loaded correctly, navigate to the online store at `http://DOCKER_IP:8787/`. Click `Login`. You'll be navigated to the authorization server's gateway at `http://DOCKER_IP:8181/uaa/login`. The username is `user` and the password is `password`. You'll be authenticated and asked to approve token grant to the online web store. After accepting the grant, you'll be redirected to the online store application where you'll be able to access protected resources from the edge service.
+
+## License
+
+This project is an open source product licensed under GPLv3.
