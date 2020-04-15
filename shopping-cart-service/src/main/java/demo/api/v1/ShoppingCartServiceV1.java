@@ -1,5 +1,7 @@
 package demo.api.v1;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.cart.*;
 import demo.catalog.Catalog;
 import demo.inventory.Inventory;
@@ -95,14 +97,32 @@ public class ShoppingCartServiceV1 {
      * @return an aggregate object derived from events performed by the user
      * @throws Exception
      */
-    public ShoppingCart getShoppingCart() throws Exception {
+    @HystrixCommand(fallbackMethod = "getShoppingCartFallback",
+    threadPoolKey = "getCartThreadPool",
+    threadPoolProperties = {
+            @HystrixProperty(name="coreSize",value="20"),
+            @HystrixProperty(name="maxQueueSize", value="10")
+    })
+    /*
+    * PW: fallback with returning empty cart, also prepare thread isolation,
+    * This task might lead to longer processing time, so try to use resource isolation
+    * */
+    public ShoppingCart getShoppingCart() {
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);
         ShoppingCart shoppingCart = null;
         if (user != null) {
             Catalog catalog = restTemplate.getForObject("http://catalog-service/v1/catalog", Catalog.class);
-            shoppingCart = aggregateCartEvents(user, catalog);
+            try {
+                shoppingCart = aggregateCartEvents(user, catalog);
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot get aggregateCartEvents.");
+            }
         }
         return shoppingCart;
+    }
+
+    private ShoppingCart getShoppingCartFallback(){
+        return new ShoppingCart(new Catalog("Empty"));
     }
 
     /**
@@ -113,6 +133,22 @@ public class ShoppingCartServiceV1 {
      * @return a shopping cart representing the aggregate state of the user's cart
      * @throws Exception
      */
+    @HystrixCommand(
+            fallbackMethod = "getShoppingCartFallback",
+            threadPoolKey = "aggregateCartThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize",value="20"),
+                    @HystrixProperty(name="maxQueueSize", value="10")
+            },
+            commandProperties = {
+                    @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value = "10"),
+                    @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="75"),
+                    @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="7000"),
+                    @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds",value="15000"),
+                    @HystrixProperty(name="metrics.rollingStats.numBuckets",value="5")
+            }
+    )
+    /* PW: in worst case take down the service*/
     public ShoppingCart aggregateCartEvents(User user, Catalog catalog) throws Exception {
         Flux<CartEvent> cartEvents =
                 Flux.fromStream(cartEventRepository.getCartEventStreamByUser(user.getId()));

@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @Service
 public class UserService {
@@ -16,6 +17,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @HystrixCommand()//Fast Fail Hope last page saves something
     @CacheEvict(value = "user", key = "#user.getId()")
     public User createUser(User user) {
 
@@ -28,11 +30,13 @@ public class UserService {
         return result;
     }
 
+    @HystrixCommand()//pw
     @Cacheable(value = "user")
     public User getUser(String id) {
         return this.userRepository.findOne(id);
     }
 
+    @HystrixCommand()//pw
     @CachePut(value = "user", key = "#id")
     public User updateUser(String id, User user) {
 
@@ -44,6 +48,7 @@ public class UserService {
 
         return result;
     }
+
 
     @CacheEvict(value = "user", key = "#id")
     public boolean deleteUser(String id) {

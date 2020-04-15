@@ -1,5 +1,6 @@
 package demo.api.v1;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import demo.account.Account;
 import demo.address.AddressType;
 import demo.order.*;
@@ -30,6 +31,7 @@ public class OrderServiceV1 {
         this.oAuth2RestTemplate = oAuth2RestTemplate;
     }
 
+    @HystrixCommand
     public Order createOrder(List<LineItem> lineItems) {
         Account[] accounts = oAuth2RestTemplate.getForObject("http://account-service/v1/accounts", Account[].class);
 
@@ -53,6 +55,7 @@ public class OrderServiceV1 {
         return newOrder;
     }
 
+    @HystrixCommand
     public Boolean addOrderEvent(OrderEvent orderEvent, Boolean validate) throws Exception {
         // Get the order for the event
         Order order = orderRepository.findOne(orderEvent.getOrderId());
@@ -68,6 +71,7 @@ public class OrderServiceV1 {
         return true;
     }
 
+    @HystrixCommand
     public Order getOrder(String orderId, Boolean validate) {
         // Get the order for the event
         Order order = orderRepository.findOne(orderId);
@@ -91,6 +95,7 @@ public class OrderServiceV1 {
                 .get();
     }
 
+    @HystrixCommand
     public List<Order> getOrdersForAccount(String accountNumber) throws Exception {
         List<Order> orders;
         validateAccountNumber(accountNumber);

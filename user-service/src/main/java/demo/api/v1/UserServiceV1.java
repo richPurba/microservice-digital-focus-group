@@ -16,8 +16,12 @@ public class UserServiceV1 {
         this.userRepository = userRepository;
     }
 
-    @HystrixCommand
+    @HystrixCommand(fallbackMethod = "getUserByUsernameFallback" )
     public User getUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
+    }
+
+    private User getUserByUsernameFallback(){
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package demo.v1;
 
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.inventory.Inventory;
 import demo.inventory.InventoryRepository;
 import demo.product.Product;
@@ -28,7 +29,7 @@ public class InventoryServiceV1 {
         this.neo4jTemplate = neo4jTemplate;
     }
 
-    @HystrixCommand(fallbackMethod = "getProductFallback")
+    @HystrixCommand(fallbackMethod = "getProductFallback",groupKey = "InventoryGroup")
     public Product getProduct(String productId) {
         Product product;
 
@@ -38,14 +39,25 @@ public class InventoryServiceV1 {
             Stream<Inventory> availableInventory = inventoryRepository.getAvailableInventoryForProduct(productId).stream();
             product.setInStock(availableInventory.findAny().isPresent());
         }
+//        else {
+//            /* PW: if product is not existing*/
+//            throw new RuntimeException("Product not existing!");
+//        }
 
         return product;
     }
 
-    private Product getProductFallback(String productId) {
-        return null;
+    public Product getProductFallback(String productId) {
+        /* PW: return a new fake product*/
+        return new Product("Empty product","404","This product is not existing, Please correct",0.0d);
     }
 
+
+//    @HystrixCommand(groupKey = "InventoryGroup",
+//            commandProperties={
+//                @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value = "5000")/* PW: melt down in 5 sec*/,
+//            }
+//    )
     public List<Inventory> getAvailableInventoryForProductIds(String productIds) {
         List<Inventory> inventoryList;
 

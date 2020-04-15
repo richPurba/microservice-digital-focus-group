@@ -25,7 +25,7 @@ public class CatalogServiceV1 {
         this.restTemplate = restTemplate;
     }
 
-    @HystrixCommand
+    @HystrixCommand(fallbackMethod = "getCatalogFallback")
     public Catalog getCatalog() {
         Catalog catalog;
 
@@ -41,9 +41,21 @@ public class CatalogServiceV1 {
         return catalog;
     }
 
-    @HystrixCommand
+    private Catalog getCatalogFallback(String productId) {
+        /* PW: fail slient*/
+        return null;
+    }
+
+    @HystrixCommand(
+            fallbackMethod = "getProductFallback"
+    )
     public Product getProduct(String productId) {
         return restTemplate.getForObject(String.format("http://inventory-service/v1/products/%s",
                 productId), Product.class);
+    }
+
+    private Product getProductFallback(String productId) {
+        /* PW: return a new fake product*/
+        return new Product("Empty product","404",0.0d);
     }
 }
