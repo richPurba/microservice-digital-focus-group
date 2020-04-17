@@ -21,7 +21,7 @@ public class UserServiceV1 {
         return userRepository.findUserByUsername(username);
     }
 
-    private User getUserByUsernameFallback(){
+    public User getUserByUsernameFallback(String username){
         return null;
     }
 }

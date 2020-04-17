@@ -1,6 +1,7 @@
 package demo.api.v1;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.account.Account;
 import demo.account.AccountRepository;
 import demo.user.User;
@@ -24,7 +25,12 @@ public class AccountServiceV1 {
         this.oAuth2RestTemplate = oAuth2RestTemplate;
     }
 
-    @HystrixCommand//pw
+    @HystrixCommand(
+            threadPoolKey = "getUserAccountsThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name="coreSize",value="20"),
+                    @HystrixProperty(name="maxQueueSize", value="10")
+            })//pw
     public List<Account> getUserAccounts() {
         List<Account> account = null;
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);

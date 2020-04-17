@@ -41,7 +41,7 @@ public class CatalogServiceV1 {
         return catalog;
     }
 
-    private Catalog getCatalogFallback(String productId) {
+    public Catalog getCatalogFallback() {
         /* PW: fail slient*/
         return null;
     }
@@ -54,7 +54,7 @@ public class CatalogServiceV1 {
                 productId), Product.class);
     }
 
-    private Product getProductFallback(String productId) {
+    public Product getProductFallback(String productId) {
         /* PW: return a new fake product*/
         return new Product("Empty product","404",0.0d);
     }

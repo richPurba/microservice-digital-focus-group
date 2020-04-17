@@ -121,7 +121,7 @@ public class ShoppingCartServiceV1 {
         return shoppingCart;
     }
 
-    private ShoppingCart getShoppingCartFallback(){
+    public ShoppingCart getShoppingCartFallback(){
         return new ShoppingCart(new Catalog("Empty"));
     }
 
@@ -134,7 +134,7 @@ public class ShoppingCartServiceV1 {
      * @throws Exception
      */
     @HystrixCommand(
-            fallbackMethod = "getShoppingCartFallback",
+//            fallbackMethod = "getShoppingCartFallback",
             threadPoolKey = "aggregateCartThreadPool",
             threadPoolProperties = {
                     @HystrixProperty(name = "coreSize",value="20"),
