@@ -38,6 +38,10 @@ security:
       userInfoUri: http://${DOCKER_IP:192.168.99.100}:8181/uaa/user
     client:
       client-id: acme
+    user:
+      name: admin
+      password: 123456
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -46,6 +50,14 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
+management:
+  security:
+    enabled: false
+    role: ADMIN
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 ---
 spring:
   application:

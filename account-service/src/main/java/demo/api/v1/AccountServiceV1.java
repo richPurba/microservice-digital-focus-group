@@ -1,5 +1,6 @@
 package demo.api.v1;
 
+import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.account.Account;
@@ -26,11 +27,17 @@ public class AccountServiceV1 {
     }
 
     @HystrixCommand(
+            fallbackMethod = "getUserAccountsFallback",
+            commandProperties = {
+                    @HystrixProperty(name = "fallback.enabled", value = "false"),
+                    @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "200")
+            },
             threadPoolKey = "getUserAccountsThreadPool",
             threadPoolProperties = {
-                    @HystrixProperty(name="coreSize",value="20"),
-                    @HystrixProperty(name="maxQueueSize", value="10")
-            })//pw
+                    @HystrixProperty(name="coreSize",value="10"),
+                    @HystrixProperty(name="maxQueueSize", value="5")
+            })
     public List<Account> getUserAccounts() {
         List<Account> account = null;
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);
@@ -48,4 +55,12 @@ public class AccountServiceV1 {
 
         return account;
     }
+
+    public List<Account> getUserAccountsFallback(){
+        List<Account> account = null;
+
+        return account;
+    }
+
+
 }

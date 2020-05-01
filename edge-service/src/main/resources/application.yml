@@ -50,7 +50,7 @@ security:
   oauth2:
     resource:
       userInfoUri: http://${DOCKER_IP:192.168.99.100}:8181/uaa/user
-  ignored: /catalog/**
+  ignored: /catalog/**, /actuator
 eureka:
   instance:
     prefer-ip-address: true
@@ -63,3 +63,18 @@ hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 ribbon:
   ConnectTimeout: 3000
   ReadTimeout: 60000
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-detail: always
+  endpoints:
+    jms:
+      exposure:
+        include: "*"
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: true

@@ -49,7 +49,7 @@ public class InventoryServiceV1 {
 
     public Product getProductFallback(String productId) {
         /* PW: return a new fake product*/
-        return new Product("Empty product","404","This product is not existing, Please correct",0.0d);
+        return new Product("Product"+productId ,productId,"Connection failure, please try again",0.0d);
     }
 
 

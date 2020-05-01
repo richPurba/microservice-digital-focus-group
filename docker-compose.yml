@@ -35,6 +35,7 @@ redis:
    - 6379:6379
 user-service:
   image: kbastani/user-service
+  container_name: user-service-0.0.1
   ports:
    - 8181:8181
   links:
@@ -64,6 +65,8 @@ edge-service:
    - DOCKER_IP=$DOCKER_IP
 account-service:
   image: kbastani/account-service
+  ports:
+    - 8091:8091
   links:
    - user-service
    - discovery-service
@@ -74,6 +77,9 @@ account-service:
    - DOCKER_IP=$DOCKER_IP
 inventory-service:
   image: kbastani/inventory-service
+  container_name: inventory-0.0.1
+  ports:
+    - 8088:8088
   links:
    - neo4j
    - discovery-service
@@ -93,6 +99,9 @@ order-service:
    - DOCKER_IP=$DOCKER_IP
 catalog-service:
   image: kbastani/catalog-service
+  container_name: catalog-0.0.1
+  ports:
+    - 8089:8089
   links:
    - redis
    - mysql
@@ -103,6 +112,8 @@ catalog-service:
    - DOCKER_IP=$DOCKER_IP
 shopping-cart-service:
   image: kbastani/shopping-cart-service
+  ports:
+    - 8090:8090
   links:
    - mysql
    - discovery-service

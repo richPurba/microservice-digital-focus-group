@@ -54,6 +54,10 @@ security:
     client:
       client-id: acme
   enable-csrf: false
+  user:
+    name: admin
+    password: 123456
+  ignored: /actuator/**
 eureka:
   instance:
     prefer-ip-address: true
@@ -62,6 +66,24 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
+management:
+  security:
+    enabled: false
+    role: ADMIN
+  endpoint:
+    health:
+      enabled: true
+      show-detail: always
+  endpoints:
+    jms:
+      exposure:
+        include: "*"
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: true
 ---
 spring:
   application:

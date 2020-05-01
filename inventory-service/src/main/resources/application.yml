@@ -29,10 +29,20 @@ eureka:
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
 management:
+  endpoint:
+    health:
+      enabled: true
+      show-detail: always
   endpoints:
-    web:
+    jms:
       exposure:
         include: "*"
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: true
 ---
 spring:
   profiles: test
