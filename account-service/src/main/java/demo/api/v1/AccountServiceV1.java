@@ -26,18 +26,19 @@ public class AccountServiceV1 {
         this.oAuth2RestTemplate = oAuth2RestTemplate;
     }
 
-    @HystrixCommand(
-            fallbackMethod = "getUserAccountsFallback",
-            commandProperties = {
-                    @HystrixProperty(name = "fallback.enabled", value = "false"),
-                    @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
-                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "200")
-            },
-            threadPoolKey = "getUserAccountsThreadPool",
-            threadPoolProperties = {
-                    @HystrixProperty(name="coreSize",value="10"),
-                    @HystrixProperty(name="maxQueueSize", value="5")
-            })
+//    @HystrixCommand(
+//            fallbackMethod = "getUserAccountsFallback",
+//            commandProperties = {
+//                    @HystrixProperty(name = "fallback.enabled", value = "false"),
+//                    @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
+//                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "200"),
+//                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "5000")
+//            },
+//            threadPoolKey = "getUserAccountsThreadPool",
+//            threadPoolProperties = {
+//                    @HystrixProperty(name="coreSize",value="10"),
+//                    @HystrixProperty(name="maxQueueSize", value="5")
+//            })
     public List<Account> getUserAccounts() {
         List<Account> account = null;
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);

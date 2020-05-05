@@ -2,6 +2,7 @@ package demo.api.v1;
 
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.catalog.Catalog;
 import demo.catalog.CatalogInfo;
 import demo.catalog.CatalogInfoRepository;
@@ -25,7 +26,16 @@ public class CatalogServiceV1 {
         this.restTemplate = restTemplate;
     }
 
-    @HystrixCommand(fallbackMethod = "getCatalogFallback")
+    @HystrixCommand(fallbackMethod = "getCatalogFallback",
+            commandProperties = {
+                    @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "1000")
+            },
+            threadPoolKey = "getCatalogThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name="coreSize",value="5"),
+                    @HystrixProperty(name="maxQueueSize", value="5")
+            })
     public Catalog getCatalog() {
         Catalog catalog;
 
@@ -42,12 +52,17 @@ public class CatalogServiceV1 {
     }
 
     public Catalog getCatalogFallback() {
-        /* PW: fail slient*/
+        /* fail slient*/
         return null;
     }
 
     @HystrixCommand(
-            fallbackMethod = "getProductFallback"
+            fallbackMethod = "getProductFallback",
+            threadPoolKey = "getProductThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name="coreSize",value="5"),
+                    @HystrixProperty(name="maxQueueSize", value="5")
+            }
     )
     public Product getProduct(String productId) {
         return restTemplate.getForObject(String.format("http://inventory-service/v1/products/%s",
@@ -56,6 +71,8 @@ public class CatalogServiceV1 {
 
     public Product getProductFallback(String productId) {
         /* PW: return a new fake product*/
-        return new Product("Empty product","404",0.0d);
+        Product fake = new Product("Product "+productId,productId,0.0d);
+        fake.setDescription("You see this product due to error, please try again later.");
+        return fake;
     }
 }
