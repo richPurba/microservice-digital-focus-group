@@ -50,4 +50,5 @@ public class AuthorizationServerConfig extends WebSecurityConfigurerAdapter {
                             "password").scopes("openid");
         }
     }
+
 }

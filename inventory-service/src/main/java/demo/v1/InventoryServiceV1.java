@@ -53,12 +53,7 @@ public class InventoryServiceV1 {
         return null;
     }
 
-
-//    @HystrixCommand(groupKey = "InventoryGroup",
-//            commandProperties={
-//                @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value = "5000")/* PW: melt down in 5 sec*/,
-//            }
-//    )
+    @HystrixCommand(fallbackMethod = "getAvailableInventoryForProductIdsFallback",groupKey = "InventoryGroup")
     public List<Inventory> getAvailableInventoryForProductIds(String productIds) {
         List<Inventory> inventoryList;
 
@@ -66,5 +61,9 @@ public class InventoryServiceV1 {
 
         return neo4jTemplate.loadAll(inventoryList, 1)
                 .stream().collect(Collectors.toList());
+    }
+
+    public List<Inventory> getAvailableInventoryForProductIdsFallback(String productIds) {
+        return null;
     }
 }

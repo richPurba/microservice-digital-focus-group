@@ -33,7 +33,6 @@ import org.springframework.web.client.RestTemplate;
 @EnableEurekaClient
 @EnableResourceServer
 @EnableOAuth2Client
-@EnableHystrix
 @EnableCircuitBreaker
 public class ShoppingCartApplication {
     public static void main(String[] args) {

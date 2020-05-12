@@ -112,6 +112,7 @@ catalog-service:
    - DOCKER_IP=$DOCKER_IP
 shopping-cart-service:
   image: kbastani/shopping-cart-service
+  container_name: cart
   ports:
     - 8090:8090
   links:

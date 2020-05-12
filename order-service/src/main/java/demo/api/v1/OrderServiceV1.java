@@ -1,6 +1,7 @@
 package demo.api.v1;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.account.Account;
 import demo.address.AddressType;
 import demo.order.*;
@@ -31,7 +32,11 @@ public class OrderServiceV1 {
         this.oAuth2RestTemplate = oAuth2RestTemplate;
     }
 
-    @HystrixCommand
+    @HystrixCommand(
+            groupKey = "OrderGroup",
+            commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public Order createOrder(List<LineItem> lineItems) {
         Account[] accounts = oAuth2RestTemplate.getForObject("http://account-service/v1/accounts", Account[].class);
 
@@ -55,7 +60,11 @@ public class OrderServiceV1 {
         return newOrder;
     }
 
-    @HystrixCommand
+    @HystrixCommand(
+            groupKey = "OrderGroup",
+            commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public Boolean addOrderEvent(OrderEvent orderEvent, Boolean validate) throws Exception {
         // Get the order for the event
         Order order = orderRepository.findOne(orderEvent.getOrderId());
@@ -71,7 +80,11 @@ public class OrderServiceV1 {
         return true;
     }
 
-    @HystrixCommand
+    @HystrixCommand(
+            groupKey = "OrderGroup",
+            commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public Order getOrder(String orderId, Boolean validate) {
         // Get the order for the event
         Order order = orderRepository.findOne(orderId);
@@ -95,7 +108,11 @@ public class OrderServiceV1 {
                 .get();
     }
 
-    @HystrixCommand
+    @HystrixCommand(
+            groupKey = "OrderGroup",
+            commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public List<Order> getOrdersForAccount(String accountNumber) throws Exception {
         List<Order> orders;
         validateAccountNumber(accountNumber);

@@ -46,6 +46,9 @@ zuul:
     user-service: /user/**
     catalog-service: /catalog/**
     shopping-cart-service: /shoppingcart/**
+  host:
+    socket-timeout-millis: 12000
+    connect-timeout-millis: 12000
 security:
   oauth2:
     resource:
@@ -59,10 +62,19 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+        timeout:
+          enable: false
 ribbon:
-  ConnectTimeout: 3000
-  ReadTimeout: 60000
+  ConnectTimeout: 20000
+  ReadTimeout: 20000
+
 management:
   endpoint:
     health:

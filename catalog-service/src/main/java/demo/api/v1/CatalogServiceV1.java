@@ -37,6 +37,7 @@ public class CatalogServiceV1 {
                     @HystrixProperty(name="maxQueueSize", value="5")
             })
     public Catalog getCatalog() {
+
         Catalog catalog;
 
         CatalogInfo activeCatalog = catalogInfoRepository.findCatalogByActive(true);

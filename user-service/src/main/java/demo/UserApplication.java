@@ -26,8 +26,8 @@ import org.springframework.stereotype.Component;
 @EnableJpaAuditing
 @EnableJpaRepositories
 @EnableEurekaClient
-@EnableHystrix
-@EnableCircuitBreaker
+//@EnableHystrix
+//@EnableCircuitBreaker
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);

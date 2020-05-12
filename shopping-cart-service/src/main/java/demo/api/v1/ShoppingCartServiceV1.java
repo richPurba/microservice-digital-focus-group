@@ -16,6 +16,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 
@@ -35,7 +36,7 @@ import static java.util.stream.Collectors.groupingBy;
  * {@link demo.cart.LineItem}.
  *
  * @author Ben Hale
- * @author Kenny Bastani
+ * @author Kenny BastaniE
  */
 @Service
 public class ShoppingCartServiceV1 {
@@ -70,6 +71,9 @@ public class ShoppingCartServiceV1 {
      * @param cartEvent is the event detailing the action performed by the user
      * @return a flag indicating whether the result was a success
      */
+    @HystrixCommand(groupKey = "addCartGroup",commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public Boolean addCartEvent(CartEvent cartEvent) {
         User user = getAuthenticatedUser();
         if (user != null) {
@@ -80,7 +84,9 @@ public class ShoppingCartServiceV1 {
         }
         return true;
     }
-
+    @HystrixCommand(groupKey = "addCartGroup",commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public Boolean addCartEvent(CartEvent cartEvent, User user) {
         if (user != null) {
             cartEvent.setUserId(user.getId());
@@ -97,16 +103,23 @@ public class ShoppingCartServiceV1 {
      * @return an aggregate object derived from events performed by the user
      * @throws Exception
      */
-    @HystrixCommand(fallbackMethod = "getShoppingCartFallback",
-    threadPoolKey = "getCartThreadPool",
-    threadPoolProperties = {
-            @HystrixProperty(name="coreSize",value="20"),
-            @HystrixProperty(name="maxQueueSize", value="10")
-    })
+
     /*
-    * PW: fallback with returning empty cart, also prepare thread isolation,
-    * This task might lead to longer processing time, so try to use resource isolation
-    * */
+     * PW: fallback with returning empty cart, also prepare thread isolation,
+     * This task might lead to longer processing time, so try to use resource isolation
+     * */
+    @HystrixCommand(fallbackMethod = "getShoppingCartFallback",
+            threadPoolKey = "getCartThreadPool",
+            groupKey="getCartGroup",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000"),
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+            })
+//            ,
+//            threadPoolProperties = {
+//                    @HystrixProperty(name = "coreSize", value = "20"),
+//                    @HystrixProperty(name = "maxQueueSize", value = "10")
+//            })
     public ShoppingCart getShoppingCart() {
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);
         ShoppingCart shoppingCart = null;
@@ -121,8 +134,8 @@ public class ShoppingCartServiceV1 {
         return shoppingCart;
     }
 
-    public ShoppingCart getShoppingCartFallback(){
-        return new ShoppingCart(new Catalog("Empty"));
+    public ShoppingCart getShoppingCartFallback() {
+        return null;
     }
 
     /**
@@ -133,21 +146,21 @@ public class ShoppingCartServiceV1 {
      * @return a shopping cart representing the aggregate state of the user's cart
      * @throws Exception
      */
-    @HystrixCommand(
-//            fallbackMethod = "getShoppingCartFallback",
-            threadPoolKey = "aggregateCartThreadPool",
-            threadPoolProperties = {
-                    @HystrixProperty(name = "coreSize",value="20"),
-                    @HystrixProperty(name="maxQueueSize", value="10")
-            },
-            commandProperties = {
-                    @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value = "10"),
-                    @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="75"),
-                    @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="7000"),
-                    @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds",value="15000"),
-                    @HystrixProperty(name="metrics.rollingStats.numBuckets",value="5")
-            }
-    )
+//    @HystrixCommand(
+////            fallbackMethod = "getShoppingCartFallback",
+//            threadPoolKey = "aggregateCartThreadPool",
+//            threadPoolProperties = {
+//                    @HystrixProperty(name = "coreSize",value="20"),
+//                    @HystrixProperty(name="maxQueueSize", value="10")
+//            },
+//            commandProperties = {
+//                    @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value = "10"),
+//                    @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="75"),
+//                    @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="7000"),
+//                    @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds",value="15000"),
+//                    @HystrixProperty(name="metrics.rollingStats.numBuckets",value="5")
+//            }
+//    )
     /* PW: in worst case take down the service*/
     public ShoppingCart aggregateCartEvents(User user, Catalog catalog) throws Exception {
         Flux<CartEvent> cartEvents =
@@ -169,6 +182,9 @@ public class ShoppingCartServiceV1 {
      *
      * @return the result of the checkout operation
      */
+    @HystrixCommand(commandProperties={
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public CheckoutResult checkout() throws Exception {
         CheckoutResult checkoutResult = new CheckoutResult();
 

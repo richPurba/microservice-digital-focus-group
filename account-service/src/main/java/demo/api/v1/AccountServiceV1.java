@@ -39,6 +39,12 @@ public class AccountServiceV1 {
 //                    @HystrixProperty(name="coreSize",value="10"),
 //                    @HystrixProperty(name="maxQueueSize", value="5")
 //            })
+    @HystrixCommand(
+            groupKey = "AccountGroup",
+            commandProperties={
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "200"),
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
     public List<Account> getUserAccounts() {
         List<Account> account = null;
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);
@@ -53,12 +59,6 @@ public class AccountServiceV1 {
                             card.setNumber(card.getNumber()
                                     .replaceAll("([\\d]{4})(?!$)", "****-"))));
         }
-
-        return account;
-    }
-
-    public List<Account> getUserAccountsFallback(){
-        List<Account> account = null;
 
         return account;
     }
