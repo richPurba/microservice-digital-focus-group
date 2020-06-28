@@ -38,10 +38,10 @@ security:
       userInfoUri: http://${DOCKER_IP:192.168.99.100}:8181/uaa/user
     client:
       client-id: acme
-    user:
-      name: admin
-      password: 123456
-
+  ignored: api/account/v1/signup, /account/v1/signup, /v1/signup, /signup
+  #up here are the key?
+hystrix:
+  shareSecurityContext: true
 eureka:
   instance:
     prefer-ip-address: true

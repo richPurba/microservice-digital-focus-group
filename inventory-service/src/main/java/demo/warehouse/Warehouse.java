@@ -19,7 +19,7 @@ public class Warehouse {
 
     private String name;
 
-    @Relationship(type="HAS_ADDRESS")
+    @Relationship(type = "HAS_ADDRESS")
     private Address address;
 
     public Warehouse() {

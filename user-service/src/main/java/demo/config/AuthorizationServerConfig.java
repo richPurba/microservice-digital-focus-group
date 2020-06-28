@@ -23,7 +23,7 @@ public class AuthorizationServerConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/actuator/**","/resources/**").permitAll()
+                .antMatchers("/actuator/**", "/resources/**", "/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -33,7 +33,6 @@ public class AuthorizationServerConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll()
                 .and()
-
                 .csrf().disable();
     }
 

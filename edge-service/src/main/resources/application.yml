@@ -49,11 +49,14 @@ zuul:
   host:
     socket-timeout-millis: 12000
     connect-timeout-millis: 12000
+  ribbon:
+    eager-load:
+      enabled: true
 security:
   oauth2:
     resource:
       userInfoUri: http://${DOCKER_IP:192.168.99.100}:8181/uaa/user
-  ignored: /catalog/**, /actuator
+  ignored: /catalog/**, /actuator, /account/**
 eureka:
   instance:
     prefer-ip-address: true

@@ -25,7 +25,7 @@ public class OnlineStoreApplication extends WebSecurityConfigurerAdapter {
         http.antMatcher("/**")
                 .authorizeRequests()
                 .antMatchers("/index.html", "/login", "/", "/api/catalog/**",
-                        "/user", "/assets/**").permitAll()
+                        "/user", "/assets/**", "/api/user/**").permitAll()
                 .anyRequest().authenticated().and().csrf().disable();
     }
 

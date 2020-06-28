@@ -1,6 +1,5 @@
 package demo.api.v1;
 
-import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.account.Account;
@@ -18,15 +17,18 @@ public class AccountServiceV1 {
 
     private AccountRepository accountRepository;
     private OAuth2RestTemplate oAuth2RestTemplate;
+    //private UserRepository userRepository;
 
     @Autowired
     public AccountServiceV1(AccountRepository accountRepository,
+                            //UserRepository userRepository,
                             @LoadBalanced OAuth2RestTemplate oAuth2RestTemplate) {
         this.accountRepository = accountRepository;
+        //this.userRepository = userRepository;
         this.oAuth2RestTemplate = oAuth2RestTemplate;
     }
 
-//    @HystrixCommand(
+    //    @HystrixCommand(
 //            fallbackMethod = "getUserAccountsFallback",
 //            commandProperties = {
 //                    @HystrixProperty(name = "fallback.enabled", value = "false"),
@@ -41,10 +43,10 @@ public class AccountServiceV1 {
 //            })
     @HystrixCommand(
             groupKey = "AccountGroup",
-            commandProperties={
+            commandProperties = {
                     @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "200"),
                     @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
-    })
+            })
     public List<Account> getUserAccounts() {
         List<Account> account = null;
         User user = oAuth2RestTemplate.getForObject("http://user-service/uaa/v1/me", User.class);
@@ -64,4 +66,8 @@ public class AccountServiceV1 {
     }
 
 
+//    public Boolean signUp(User user){
+//        //userRepository.save(user);
+//        return true;
+//    }
 }

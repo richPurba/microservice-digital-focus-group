@@ -43,6 +43,13 @@ management:
         include: "*"
       cors:
         allowed-origins: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
 ---
 spring:
   profiles: test

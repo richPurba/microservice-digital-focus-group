@@ -29,12 +29,12 @@ public class CatalogServiceV1 {
     @HystrixCommand(fallbackMethod = "getCatalogFallback",
             commandProperties = {
                     @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "1000")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000")
             },
             threadPoolKey = "getCatalogThreadPool",
             threadPoolProperties = {
-                    @HystrixProperty(name="coreSize",value="5"),
-                    @HystrixProperty(name="maxQueueSize", value="5")
+                    @HystrixProperty(name = "coreSize", value = "5"),
+                    @HystrixProperty(name = "maxQueueSize", value = "5")
             })
     public Catalog getCatalog() {
 
@@ -61,8 +61,8 @@ public class CatalogServiceV1 {
             fallbackMethod = "getProductFallback",
             threadPoolKey = "getProductThreadPool",
             threadPoolProperties = {
-                    @HystrixProperty(name="coreSize",value="5"),
-                    @HystrixProperty(name="maxQueueSize", value="5")
+                    @HystrixProperty(name = "coreSize", value = "5"),
+                    @HystrixProperty(name = "maxQueueSize", value = "5")
             }
     )
     public Product getProduct(String productId) {
@@ -72,7 +72,7 @@ public class CatalogServiceV1 {
 
     public Product getProductFallback(String productId) {
         /* PW: return a new fake product*/
-        Product fake = new Product("Product "+productId,productId,0.0d);
+        Product fake = new Product("Product " + productId, productId, 0.0d);
         fake.setDescription("You see this product due to error, please try again later.");
         return fake;
     }

@@ -29,7 +29,7 @@ public class InventoryServiceV1 {
         this.neo4jTemplate = neo4jTemplate;
     }
 
-    @HystrixCommand(fallbackMethod = "getProductFallback",groupKey = "InventoryGroup")
+    @HystrixCommand(fallbackMethod = "getProductFallback", groupKey = "InventoryGroup")
     public Product getProduct(String productId) {
         Product product;
 
@@ -53,7 +53,7 @@ public class InventoryServiceV1 {
         return null;
     }
 
-    @HystrixCommand(fallbackMethod = "getAvailableInventoryForProductIdsFallback",groupKey = "InventoryGroup")
+    @HystrixCommand(fallbackMethod = "getAvailableInventoryForProductIdsFallback", groupKey = "InventoryGroup")
     public List<Inventory> getAvailableInventoryForProductIds(String productIds) {
         List<Inventory> inventoryList;
 

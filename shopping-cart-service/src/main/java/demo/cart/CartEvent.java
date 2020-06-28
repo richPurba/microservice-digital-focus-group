@@ -4,7 +4,7 @@ import demo.data.BaseEntity;
 
 import javax.persistence.*;
 
-@Table(name = "cart_event", indexes = { @Index(name = "IDX_CART_EVENT_USER", columnList = "id,userId") })
+@Table(name = "cart_event", indexes = {@Index(name = "IDX_CART_EVENT_USER", columnList = "id,userId")})
 @Entity
 public class CartEvent extends BaseEntity {
 

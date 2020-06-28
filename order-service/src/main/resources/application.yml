@@ -38,12 +38,22 @@ spring:
     date-format: "YYYY-MM-dd"
     serialization:
       write_dates_as_timestamps: true
+hystrix:
+  shareSecurityContext: true
 security:
   oauth2:
     resource:
       userInfoUri: http://${DOCKER_IP:192.168.99.100}:8181/uaa/user
     client:
       client-id: acme
+management:
+  security:
+    enabled: false
+    role: ADMIN
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 eureka:
   instance:
     prefer-ip-address: true

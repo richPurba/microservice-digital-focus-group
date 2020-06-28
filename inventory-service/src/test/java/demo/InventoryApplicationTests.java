@@ -75,7 +75,7 @@ public class InventoryApplicationTests {
 
     @Test
     public void inventoryTest() {
-        if(neo4jConnection) {
+        if (neo4jConnection) {
             Warehouse warehouse = new Warehouse("Pivotal SF");
 
             List<Product> products = Arrays.asList(

@@ -4,8 +4,7 @@ import demo.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +26,10 @@ public class AccountControllerV1 {
                 .map(a -> new ResponseEntity<List<Account>>(a, HttpStatus.OK))
                 .orElseThrow(() -> new Exception("Accounts for user do not exist"));
     }
+
+//    @RequestMapping(path = "/signup",method = RequestMethod.POST)
+//    public String signUp(@RequestBody User user) throws Exception {
+//        //accountService.signUp(user);
+//        return "success";
+//    }
 }

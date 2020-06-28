@@ -71,7 +71,7 @@ public class ShoppingCartServiceV1 {
      * @param cartEvent is the event detailing the action performed by the user
      * @return a flag indicating whether the result was a success
      */
-    @HystrixCommand(groupKey = "addCartGroup",commandProperties={
+    @HystrixCommand(groupKey = "addCartGroup", commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })
     public Boolean addCartEvent(CartEvent cartEvent) {
@@ -84,7 +84,8 @@ public class ShoppingCartServiceV1 {
         }
         return true;
     }
-    @HystrixCommand(groupKey = "addCartGroup",commandProperties={
+
+    @HystrixCommand(groupKey = "addCartGroup", commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })
     public Boolean addCartEvent(CartEvent cartEvent, User user) {
@@ -110,7 +111,7 @@ public class ShoppingCartServiceV1 {
      * */
     @HystrixCommand(fallbackMethod = "getShoppingCartFallback",
             threadPoolKey = "getCartThreadPool",
-            groupKey="getCartGroup",
+            groupKey = "getCartGroup",
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000"),
                     @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
@@ -182,7 +183,7 @@ public class ShoppingCartServiceV1 {
      *
      * @return the result of the checkout operation
      */
-    @HystrixCommand(commandProperties={
+    @HystrixCommand(commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })
     public CheckoutResult checkout() throws Exception {

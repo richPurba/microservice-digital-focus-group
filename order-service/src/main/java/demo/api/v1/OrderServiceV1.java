@@ -34,9 +34,9 @@ public class OrderServiceV1 {
 
     @HystrixCommand(
             groupKey = "OrderGroup",
-            commandProperties={
-            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
-    })
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+            })
     public Order createOrder(List<LineItem> lineItems) {
         Account[] accounts = oAuth2RestTemplate.getForObject("http://account-service/v1/accounts", Account[].class);
 
@@ -62,9 +62,9 @@ public class OrderServiceV1 {
 
     @HystrixCommand(
             groupKey = "OrderGroup",
-            commandProperties={
-            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
-    })
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+            })
     public Boolean addOrderEvent(OrderEvent orderEvent, Boolean validate) throws Exception {
         // Get the order for the event
         Order order = orderRepository.findOne(orderEvent.getOrderId());
@@ -82,9 +82,9 @@ public class OrderServiceV1 {
 
     @HystrixCommand(
             groupKey = "OrderGroup",
-            commandProperties={
-            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
-    })
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+            })
     public Order getOrder(String orderId, Boolean validate) {
         // Get the order for the event
         Order order = orderRepository.findOne(orderId);
@@ -110,9 +110,10 @@ public class OrderServiceV1 {
 
     @HystrixCommand(
             groupKey = "OrderGroup",
-            commandProperties={
-            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
-    })
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"),
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "20000")
+            })
     public List<Order> getOrdersForAccount(String accountNumber) throws Exception {
         List<Order> orders;
         validateAccountNumber(accountNumber);
