@@ -140,3 +140,14 @@ online-store-web:
   environment:
     - SPRING_PROFILES_ACTIVE=docker
     - DOCKER_IP=$DOCKER_IP
+turbine-service:
+  image: kbastani/turbine-service
+  container_name: turbine
+  ports:
+    - 6162:6162
+  links:
+    - discovery-service
+    - config-service
+  environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP

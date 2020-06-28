@@ -1,0 +1,5 @@
+server:
+  port: 6162
+spring:
+  application:
+    name: turbine-service
